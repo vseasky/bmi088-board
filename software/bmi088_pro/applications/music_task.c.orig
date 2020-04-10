@@ -1,0 +1,140 @@
+#include "music_task.h"
+
+#include "bsp_buzzer.h"
+#include "cmsis_os.h"
+
+//定义时值单位,决定演奏的速度 ms为单位 2000为佳
+#define TT 2000
+
+typedef struct
+{
+    short mName; //音名
+    short mTime; //时值，全音符，二分音符，四分音符
+} tNote;
+//Always with me
+const tNote Always_with_me[]=
+{
+    {0,TT/2},{M1,TT/8},{M2,TT/8},{M3,TT/8},{M1,TT/8},{M5,TT/4+TT/8},{M3,TT/8},
+    {M2,TT/4},{M5,TT/4},{M2,TT/4},{M1,TT/8},{L6,TT/8},{M3,TT/4+TT/8},{M1,TT/8},
+    {L7,TT/2},{M1,TT/8},{L7,TT/8},{L6,TT/4},{L7,TT/4},{M1,TT/8},{M2,TT/8},
+    {L5,TT/4},{M1,TT/4},{M2,TT/8},{M3,TT/8},{M4,TT/4},{M4,TT/8},{M3,TT/8},{M2,TT/8},{M1,TT/8},
+    {M2,TT/2},{M1,TT/8},{M2,TT/8},{M3,TT/8},{M1,TT/8},{M5,TT/4+TT/8},{M3,TT/8},
+    {M2,TT/4},{M5,TT/4},{M2,TT/4},{M1,TT/8},{L6,TT/8},{L6,TT/4},{L7,TT/8},{M1,TT/8},
+    {L5,TT/2},{0,TT/8},{L5,TT/8},{L6,TT/4},{L7,TT/4},{M1,TT/8},{M2,TT/8},//question
+    {L5,TT/4},{M1,TT/4},{M2,TT/8},{M3,TT/8},{M4,TT/4},{M4,TT/8},{M3,TT/8},{M2,TT/8},{M1,TT/8},{M1,TT/2+TT/4},
+
+    {0,TT/2},{M3,TT/8},{M4,TT/8},{M5,TT/4},{M5,TT/4},{M5,TT/4},{M5,TT/4},{M5,TT/8},{M6,TT/8},{M5,TT/8},{M4,TT/8},
+    {M3,TT/4},{M3,TT/4},{M3,TT/4},{M3,TT/4},{M3,TT/8},{M4,TT/8},{M3,TT/8},{M2,TT/8},
+    {M1,TT/4},{M1,TT/4},{M1,TT/8},{L7,TT/8},{L6,TT/4},{L7,TT/4},{L7,TT/8},{M1,TT/8},
+    {M2,TT/4},{M2,TT/8},{M3,TT/8},{M2,TT/8},{M3,TT/8},{M2,TT/2},{M3,TT/8},{M4,TT/8},
+    {M5,TT/4},{M5,TT/4},{M5,TT/4},{M5,TT/4},{M5,TT/8},{M6,TT/8},{M5,TT/8},{M4,TT/8},
+    {M3,TT/4},{M3,TT/4},{M3,TT/4},{M3,TT/8},{M4,TT/8},{M3,TT/8},{M2,TT/8},{M1,TT/8},{L7,TT/8},
+    {L6,TT/4},{L6,TT/8},{L7,TT/8},{M1,TT/8},{M2,TT/8},{L5,TT/4},{M1,TT/4},{M2,TT/8},{M3,TT/8},
+    {M2,TT/4+TT/8},{M2,TT/8},{M2,TT/8},{M1,TT/8},{M1,TT/2+TT/4},
+
+    {0,TT/2},{M1,TT/8},{M2,TT/8},{M3,TT/8},{M1,TT/8},{M5,TT/4+TT/8},{M3,TT/8},
+    {M2,TT/4},{M5,TT/4},{M2,TT/4},{M1,TT/8},{L6,TT/8},{M3,TT/4+TT/8},{M1,TT/8},
+    {L7,TT/2},{M1,TT/8},{L7,TT/8},{L6,TT/4},{L7,TT/4},{M1,TT/8},{M2,TT/8},
+    {L5,TT/4},{M1,TT/4},{M2,TT/8},{M3,TT/8},{M4,TT/4},{M4,TT/8},{M3,TT/8},{M2,TT/8},{M1,TT/8},
+    {M2,TT/2},{M1,TT/8},{M2,TT/8},{M3,TT/8},{M1,TT/8},{M5,TT/4+TT/8},{M3,TT/8},
+    {M2,TT/4},{M5,TT/4},{M2,TT/4},{M1,TT/8},{L6,TT/8},{L6,TT/4},{L7,TT/8},{M1,TT/8},
+    {L5,TT/2},{0,TT/8},{L5,TT/8},{L6,TT/4},{L7,TT/4},{M1,TT/8},{M2,TT/8},//question
+    {L5,TT/4},{M1,TT/4},{M2,TT/8},{M3,TT/8},{M4,TT/4},{M4,TT/8},{M3,TT/8},{M2,TT/8},{M1,TT/8},{M1,TT/2+TT/4},
+
+    {0,TT/2},{M3,TT/8},{M4,TT/8},{M5,TT/4},{M5,TT/4},{M5,TT/4},{M5,TT/4},{M5,TT/8},{M6,TT/8},{M5,TT/8},{M4,TT/8},
+    {M3,TT/4},{M3,TT/4},{M3,TT/4},{M3,TT/4},{M3,TT/8},{M4,TT/8},{M3,TT/8},{M2,TT/8},
+    {M1,TT/4},{M1,TT/4},{M1,TT/8},{L7,TT/8},{L6,TT/4},{L7,TT/4},{L7,TT/8},{M1,TT/8},
+    {M2,TT/4},{M2,TT/8},{M3,TT/8},{M2,TT/8},{M3,TT/8},{M2,TT/2},{M3,TT/8},{M4,TT/8},
+    {M5,TT/4},{M5,TT/4},{M5,TT/4},{M5,TT/4},{M5,TT/8},{M6,TT/8},{M5,TT/8},{M4,TT/8},
+    {M3,TT/4},{M3,TT/4},{M3,TT/4},{M3,TT/8},{M4,TT/8},{M3,TT/8},{M2,TT/8},{M1,TT/8},{L7,TT/8},
+    {L6,TT/4},{L6,TT/8},{L7,TT/8},{M1,TT/8},{M2,TT/8},{L5,TT/4},{M1,TT/4},{M2,TT/8},{M3,TT/8},
+    {M2,TT/4+TT/8},{M2,TT/8},{M2,TT/8},{M1,TT/8},{M1,TT/2+TT/4},
+};
+
+#define HaoYunLai_Length 156
+const tNote HaoYunLai[HaoYunLai_Length]=
+{
+    {M6,TT/4},{H3,TT/8+TT/16},{H2,TT/16},{H2,TT/4},{H1,TT/8},{M6,TT/8},
+    {M5,TT/4},{H1,TT/8+TT/16},{H2,TT/16},{M6,TT/4},{0,TT/4},
+    {M6,TT/4},{H2,TT/4},{H1,TT/4},{M6,TT/8},{M5,TT/8},
+    {M2,TT/4},{M5,TT/8},{M6,TT/8},{M5,TT/8},{M3,TT/4},{0,TT/8},
+    //好运来祝你好运来，好运带来了喜和爱
+    {M3,TT/4},{M6,TT/8+TT/16},{M5,TT/16},{M6,TT/4},{M6,TT/8},{M5,TT/8},
+    {M6,TT/4},{H2,TT/8+TT/16},{H1,TT/16},{H2,TT/4},{0,TT/4},
+    {H1,TT/8+TT/16},{H1,TT/16},{H1,TT/8},{H2,TT/8},{H3,TT/8},{H3,TT/8},{H2,TT/8},{H1,TT/8},
+    {M5,TT/4},{H1,TT/8+TT/16},{M6,TT/16}, {M6,TT/2+TT/4},{0,TT/4},
+    //好运来我们好运来，迎着好运兴旺发达通四海
+
+
+    {M6,TT/8+TT/16},{M6,TT/16},{H1,TT/8},{H1,TT/8},{M6,TT/4},{0,TT/8},{M6,TT/8},
+    {M5,TT/8},{M3,TT/8},{M5,TT/8},{H1,TT/8},{M6,TT/4},{0,TT/4},
+    //叠个千纸鹤，再系个红腰带
+    {M6,TT/8},{H1,TT/8},{H1,TT/8+TT/16},{H1,TT/16},{H1,TT/8},{M6,TT/8},{M5,TT/4},
+    {M6,TT/8},{M5,TT/8},{M2,TT/8},{M5,TT/8},{M3,TT/4},{0,TT/8},{M2,TT/8},
+    //愿善良的人们天天好运来
+    {M3,TT/8},{M2,TT/8},{M1,TT/8},{M3,TT/8},{M2,TT/4},{0,TT/8},{M3,TT/8},
+    {M6,TT/8},{M5,TT/8},{M3,TT/8},{M6,TT/8},{M6,TT/8},{M5,TT/4},{0,TT/8},
+    //你勤劳生活美，你健康春常在
+    {M6,TT/8},{H1,TT/8},{H1,TT/8+TT/16},{M6,TT/16},{H2,TT/8},{H2,TT/8},{H2,TT/8},{H1,TT/8},
+    {M6,TT/4},{M5,TT/8},{H1,TT/8},{M6,TT/2+TT/4},{0,TT/4},
+    //你一生的忙碌为了笑逐颜开
+
+    {M6,TT/4},{H3,TT/8+TT/16},{H2,TT/16},{H2,TT/4},{H1,TT/8},{M6,TT/8},
+    {M5,TT/4},{H1,TT/8+TT/16},{H2,TT/16},{M6,TT/4},{0,TT/4},
+    {M6,TT/4},{H2,TT/4},{H1,TT/4},{M6,TT/8},{M5,TT/8},
+    {M2,TT/4},{M5,TT/8},{M6,TT/8},{M5,TT/8},{M3,TT/4},{0,TT/8},
+    //好运来祝你好运来，好运带来了喜和爱
+    {M3,TT/4},{M6,TT/8+TT/16},{M5,TT/16},{M6,TT/4},{M6,TT/8},{M5,TT/8},
+    {M6,TT/4},{H2,TT/8+TT/16},{H1,TT/16},{H2,TT/4},{0,TT/4},
+    {H1,TT/8+TT/16},{H1,TT/16},{H1,TT/8},{H2,TT/8},{H3,TT/8},{H3,TT/8},{H2,TT/8},{H1,TT/8},
+    {M5,TT/4},{H1,TT/8+TT/16},{M6,TT/16}, {M6,TT/2+TT/4},{0,TT/4},
+    //好运来我们好运来，迎着好运兴旺发达通四海
+    {H2,TT/4+TT/2},{0,TT/4},{H3,TT/4+TT/2},{0,TT/4},{M6,TT/4+TT/2},
+    {0,TT/4},{M5,TT/8},{M5,TT/8},{M6,TT/4},{0,TT/4},
+    //通四海，好运来
+};
+
+osThreadId musicTaskHandle;
+void music_task_creat(void)
+{
+    osThreadDef(musicTask,musicPlay_task,osPriorityRealtime,0,128);
+    musicTaskHandle = osThreadCreate(osThread(musicTask), NULL);
+}
+//蜂鸣器发出声音
+//usFreq即发声频率
+void buzzerSound(unsigned short usFraq)   //usFraq是发声频率，即真实世界一个音调的频率。
+//取值是(系统时钟/65536)+1~20000,单位为Hz。即122~20000Hz。
+{
+    uint32_t ulVal;
+    if((usFraq<=BUZZER_HARDWARE_MAX_FREQ/65536UL)||(usFraq>20000))
+        {
+            buzzer_off();
+        }
+    else
+        {
+            ulVal=(BUZZER_HARDWARE_MAX_FREQ/usFraq)-1;//系统时钟除以现实世界频率，装入ARR
+            buzzer_on(ulVal,ulVal/300);
+        }
+}
+//Play Music
+void musicPlay_task(void const *pvParameters)
+{
+    static uint8_t i=0;
+    while(1)
+        {
+            if(i<HaoYunLai_Length)
+                {
+                    if(HaoYunLai[i].mTime>0)
+                        {
+                            buzzerSound(HaoYunLai[i].mName);
+                            osDelay(HaoYunLai[i].mTime);
+                            i++;
+                        }
+                }
+			else if(i>=HaoYunLai_Length)
+			{
+				osDelay(500);
+				i=0;
+			}
+        }
+}

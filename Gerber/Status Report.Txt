@@ -1,0 +1,12 @@
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [BMI088_V1.PrjPcb]
+   Generated File[BMI088_V1-Plated.TXT]
+   Generated File[BMI088_V1.LDP]
+   Generated File[BMI088_V1.DRR]
+
+
+Files Generated   : 3
+Documents Printed : 0
+
+Finished Output Generation At 11:43:54 On 2020/4/1

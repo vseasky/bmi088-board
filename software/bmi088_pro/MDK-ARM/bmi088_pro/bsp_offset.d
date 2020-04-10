@@ -1,0 +1,15 @@
+bmi088_pro\bsp_offset.o: ..\modules\bmi088\bsp_offset.c
+bmi088_pro\bsp_offset.o: ..\modules\bmi088\bsp_offset.h
+bmi088_pro\bsp_offset.o: ..\groundwork\struct_typedef.h
+bmi088_pro\bsp_offset.o: ..\groundwork\bsp_flash\bsp_flash.h
+bmi088_pro\bsp_offset.o: ..\modules\bmi088\bsp_bmi088.h
+bmi088_pro\bsp_offset.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRtos.h
+bmi088_pro\bsp_offset.o: D:\Software_Tool\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+bmi088_pro\bsp_offset.o: D:\Software_Tool\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+bmi088_pro\bsp_offset.o: ../Inc/FreeRTOSConfig.h
+bmi088_pro\bsp_offset.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
+bmi088_pro\bsp_offset.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
+bmi088_pro\bsp_offset.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
+bmi088_pro\bsp_offset.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h
+bmi088_pro\bsp_offset.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
+bmi088_pro\bsp_offset.o: D:\Software_Tool\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
