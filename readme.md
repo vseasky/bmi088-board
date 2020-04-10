@@ -1,5 +1,7 @@
 开源BMI088姿态传感器
 
+演示视频[https://b23.tv/BV1Dp4y1C7rC](https://b23.tv/BV1Dp4y1C7rC)
+
 <img src="./image/BMI088.jpg"/>
 <img src="./image/BMI088p.jpg"/>
 <img src="./image/BMI088p2.jpg"/>
