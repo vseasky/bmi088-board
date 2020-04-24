@@ -1,7 +1,9 @@
+**@版权所有->SEASKY**
+
 开源BMI088姿态传感器
 GITHUB:[https://github.com/SEASKY-Master/BMI088_Master](https://github.com/SEASKY-Master/BMI088_Master)
 
-演示视频[https://b23.tv/BV1Dp4y1C7rC](https://b23.tv/BV1Dp4y1C7rC)
+视频[https://b23.tv/BV1Dp4y1C7rC](https://b23.tv/BV1Dp4y1C7rC)
 	<img src="./image/BMI088.jpg" width = "800"/>
 	<img src="./image/BMI088p.jpg" width = "800"/>
 	<img src="./image/BMI088p2.jpg" width = "800"/>
