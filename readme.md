@@ -1,4 +1,4 @@
-**@版权所有->SEASKY**
+**@版权所有->刘威**
 
 **开源BMI088姿态传感器
 GITHUB:[https://github.com/SEASKY-Master/BMI088_Master](https://github.com/SEASKY-Master/BMI088_Master)**
